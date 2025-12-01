@@ -1,13 +1,44 @@
-# Astro with Tailwind
+# svvy.sh website
 
+Astro + React site for svvy.sh that showcases products and developer tools.
+
+## Tech stack
+- Astro 5 with React islands
+- Tailwind CSS v4 (class-based, no config file)
+- TypeScript + Biome + Prettier
+- Deployed as a static build (SSG)
+
+## Quick start
+1) Install dependencies (Node 20+ recommended):
 ```sh
-pnpm create astro@latest -- --template with-tailwindcss
+pnpm install
+```
+2) Run the dev server:
+```sh
+pnpm dev
+```
+3) Build and preview the static output:
+```sh
+pnpm build
+pnpm preview
 ```
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/with-tailwindcss)
-[![Open with CodeSandbox](https://assets.codesandbox.io/github/button-edit-lime.svg)](https://codesandbox.io/p/sandbox/github/withastro/astro/tree/latest/examples/with-tailwindcss)
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/withastro/astro?devcontainer_path=.devcontainer/with-tailwindcss/devcontainer.json)
+## Linting and formatting
+```sh
+pnpm lint    # prettier check for .astro + biome check
+pnpm format  # prettier + biome format
+```
 
-Astro comes with [Tailwind](https://tailwindcss.com) support out of the box. This example showcases how to style your Astro project with Tailwind.
+## GitHub API token (optional)
+Repo cards on the home page fetch stars, tags, and versions from the GitHub API. To avoid rate limits, set `GITHUB_TOKEN` in `.env.local`:
+```sh
+GITHUB_TOKEN=ghp_your_token_here
+```
+If absent, the site still renders but may fall back to basic card data.
 
-For complete setup instructions, please see our [Tailwind Integration Guide](https://docs.astro.build/en/guides/integrations-guide/tailwind).
+## Project structure
+- `src/pages` — Astro routes (`index.astro` is the landing page)
+- `src/components` — UI building blocks and sections
+- `src/layouts` — shared page chrome, theme toggling, and fonts
+- `src/lib` — helper utilities (GitHub fetching, constants)
+- `public` — static assets (favicons, etc.)
