@@ -50,7 +50,8 @@ const primaryIsGithub = !websiteUrl && !!githubUrl
 
 <article
   class:list={[
-    'group relative bg-card border border-border',
+    'group relative border border-border',
+    'bg-card/70 backdrop-blur-[1px] supports-backdrop-filter:bg-card/50',
     'hover:border-primary/60',
     'min-w-0 h-full',
     primaryUrl ? 'cursor-pointer' : '',

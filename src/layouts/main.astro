@@ -52,7 +52,7 @@ const { title = SITE_TITLE, description = SITE_DESCRIPTION } = Astro.props
   <!-- Added overflow-x-hidden to prevent horizontal scroll -->
   <body class='min-h-screen bg-background text-foreground antialiased overflow-x-hidden'>
     <!-- Full-width canvas so background + navbar stretch across large screens -->
-    <div class='relative min-h-screen flex flex-col bg-card'>
+    <div class='relative z-10 min-h-screen flex flex-col bg-card'>
       <Nav />
       <main class='flex-1 overflow-y-auto overflow-x-hidden'>
         <div class='w-full max-w-[1120px] mx-auto px-3 sm:px-6'>

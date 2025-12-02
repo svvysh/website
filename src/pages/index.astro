@@ -1,14 +1,39 @@
 ---
 import Hero from '@/components/Hero.astro'
+import Section from '@/components/Section.astro'
 import Contact from '@/components/sections/Contact.astro'
 import Products from '@/components/sections/Products.astro'
 import Tools from '@/components/sections/Tools.astro'
+import LogoHero from '@/components/three/LogoHero'
 import MainLayout from '@/layouts/main.astro'
 ---
 
 <MainLayout content={{ title: 'Home' }}>
-  <Hero />
-  <Products />
-  <Tools />
-  <Contact />
+  <script is:inline>
+    document.body.classList.add('has-3d-bg')
+  </script>
+  <style is:global>
+    .has-3d-bg .bg-card {
+      background-color: transparent;
+    }
+  </style>
+
+  <!-- Fixed full-viewport 3D background hero -->
+  <div class='fixed inset-0 pointer-events-none z-0'>
+    <LogoHero client:only='react' />
+  </div>
+
+  <!-- Hero text sits at bottom of first fold; rest follows -->
+  <div class='relative z-10'>
+    <div class='space-y-5 sm:space-y-7'>
+      <div class='min-h-[95vh] flex items-end'>
+        <Section id='hero' banded class='w-full'>
+          <Hero />
+        </Section>
+      </div>
+      <Products />
+      <Tools />
+      <Contact />
+    </div>
+  </div>
 </MainLayout>

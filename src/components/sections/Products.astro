@@ -12,6 +12,7 @@ const productData = await fetchRepoCards(PRODUCTS)
   label='Products'
   title='Consumer apps'
   description="What we're building or we shipped recently."
+  banded
 >
   <div class='grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3'>
     {productData.map((product) => <RepoCard {...product} />)}

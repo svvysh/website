@@ -1,6 +1,12 @@
 {
   "prettier.documentSelectors": ["**/*.astro"],
   "[astro]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": "never",
+      "source.fixAll": "never",
+      // We need to disable because it wrangles with the import
+      "source.organizeImports.biome": "never"
+    }
   }
 }

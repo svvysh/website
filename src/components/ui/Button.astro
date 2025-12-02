@@ -2,26 +2,46 @@
 import type { AnchorHTMLAttributes, ButtonHTMLAttributes } from 'react'
 import { cn } from '@/lib/utils'
 
-interface Props
-  extends AnchorHTMLAttributes<HTMLAnchorElement>,
-    ButtonHTMLAttributes<HTMLButtonElement> {
+type CommonProps = {
   variant?: 'primary' | 'outline' | 'ghost' | 'link'
   size?: 'xs' | 'sm' | 'md' | 'lg'
-  href?: string
-  type?: 'button' | 'submit' | 'reset'
-  disabled?: boolean
   class?: string
 }
 
-const {
-  variant = 'primary',
-  size = 'md',
-  href,
-  type = 'button',
-  disabled = false,
-  class: className = '',
-  ...rest
-} = Astro.props
+type AnchorProps = CommonProps &
+  AnchorHTMLAttributes<HTMLAnchorElement> & {
+    href: string
+  }
+
+type ButtonProps = CommonProps &
+  ButtonHTMLAttributes<HTMLButtonElement> & {
+    href?: undefined
+    type?: 'button' | 'submit' | 'reset'
+    disabled?: boolean
+  }
+
+type Props = AnchorProps | ButtonProps
+
+function isAnchorProps(props: Props): props is AnchorProps {
+  return typeof props.href === 'string' && props.href.length > 0
+}
+
+const props = Astro.props as Props
+const variant = props.variant ?? 'primary'
+const size = props.size ?? 'md'
+const className = props.class ?? ''
+const href = isAnchorProps(props) ? props.href : undefined
+
+let anchorProps: AnchorHTMLAttributes<HTMLAnchorElement> | null = null
+let buttonProps: ButtonHTMLAttributes<HTMLButtonElement> | null = null
+
+if (isAnchorProps(props)) {
+  const { variant: _v, size: _s, class: _c, href: _href, role: _role, ...restAnchor } = props
+  anchorProps = restAnchor
+} else {
+  const { variant: _v, size: _s, class: _c, href: _h, role: _role, ...restButton } = props
+  buttonProps = restButton
+}
 
 const baseClasses =
   'inline-flex items-center justify-center font-medium rounded-sm transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-50'
@@ -42,15 +62,43 @@ const sizeClasses = {
 }
 
 const classes = cn(baseClasses, variantClasses[variant], sizeClasses[size], className)
+
+const {
+  type: btnType = 'button',
+  disabled: btnDisabled = false,
+  value,
+  ...buttonRest
+} = buttonProps ?? {}
+
+const rawValue = value
+const normalizedValue: string | number | string[] | null | undefined = Array.isArray(rawValue)
+  ? [...rawValue]
+  : (rawValue as string | number | null | undefined)
+
+const safeAnchorProps = (() => {
+  const { role: _role, ...rest } = (anchorProps ?? {}) as AnchorHTMLAttributes<HTMLAnchorElement>
+  return rest as Omit<AnchorHTMLAttributes<HTMLAnchorElement>, 'role'>
+})()
+
+const safeButtonProps = (() => {
+  const { role: _role, ...rest } = buttonRest as ButtonHTMLAttributes<HTMLButtonElement>
+  return rest as Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'role' | 'value'>
+})()
 ---
 
 {
   href ? (
-    <a href={href} class={classes} {...rest}>
+    <a href={href} class={classes} {...safeAnchorProps}>
       <slot />
     </a>
   ) : (
-    <button type={type} disabled={disabled} class={classes} {...rest}>
+    <button
+      type={btnType}
+      disabled={btnDisabled}
+      value={normalizedValue}
+      class={classes}
+      {...safeButtonProps}
+    >
       <slot />
     </button>
   )

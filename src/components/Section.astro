@@ -3,53 +3,97 @@ import { cn } from '@/lib/utils'
 
 interface Props {
   id: string
-  label: string
-  title: string
+  label?: string
+  title?: string
   description?: string
   class?: string
+  banded?: boolean
 }
 
-const { id, label, title, description, class: className = '' } = Astro.props
+const { id, label = '', title, description, banded = false, class: className = '' } = Astro.props
+const hasMeta = Boolean(label || title || description)
 ---
 
-<!-- Reduced padding, added overflow handling -->
-<section
-  id={id}
-  class={cn(
-    'py-5 sm:py-8 md:py-10 px-3 sm:px-6 border-b border-border last:border-b-0 overflow-hidden',
-    className,
-  )}
->
-  <div
-    class='grid grid-cols-1 md:grid-cols-[100px_1fr] lg:grid-cols-[140px_1fr] gap-2 sm:gap-4 md:gap-6'
-  >
-    <!-- Left meta rail -->
-    <div class='md:pt-0.5'>
-      <!-- Sharp border radius on label -->
-      <span
-        class='inline-block font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground bg-muted px-1.5 py-0.5'
-      >
-        {label}
-      </span>
-    </div>
+{
+  banded ? (
+    <div class='relative w-screen left-1/2 right-1/2 ml-[-50vw] mr-[-50vw] bg-card/80 backdrop-blur-[2px] supports-backdrop-filter:bg-card/60'>
+      <div class='w-full max-w-[1120px] mx-auto px-3 sm:px-6'>
+        <section id={id} class={cn('py-3 sm:py-4 md:py-5 overflow-hidden', className)}>
+          {hasMeta ? (
+            <div class='grid grid-cols-1 md:grid-cols-[100px_1fr] lg:grid-cols-[140px_1fr] gap-2 sm:gap-4 md:gap-6'>
+              {label && (
+                <div class='md:pt-0.5'>
+                  <span class='inline-block font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground bg-muted px-1.5 py-0.5'>
+                    {label}
+                  </span>
+                </div>
+              )}
 
-    <!-- Right content -->
-    <div class='space-y-3 sm:space-y-4 min-w-0'>
-      {
-        (title || description) && (
-          <div class='space-y-1'>
-            {title && <h2 class='text-base sm:text-lg font-medium text-foreground'>{title}</h2>}
-            {description && (
-              <p class='text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl'>
-                {description}
-              </p>
-            )}
-          </div>
-        )
-      }
-      <div class='min-w-0'>
-        <slot />
+              <div class='space-y-3 sm:space-y-4 min-w-0'>
+                {(title || description) && (
+                  <div class='space-y-1'>
+                    {title && (
+                      <h2 class='text-base sm:text-lg font-medium text-foreground'>{title}</h2>
+                    )}
+                    {description && (
+                      <p class='text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl'>
+                        {description}
+                      </p>
+                    )}
+                  </div>
+                )}
+                <div class='min-w-0'>
+                  <slot />
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div class='grid grid-cols-1 md:grid-cols-[100px_1fr] lg:grid-cols-[140px_1fr] gap-2 sm:gap-4 md:gap-6'>
+              <div class='hidden md:block' aria-hidden='true' />
+              <div class='min-w-0'>
+                <slot />
+              </div>
+            </div>
+          )}
+        </section>
       </div>
     </div>
-  </div>
-</section>
+  ) : (
+    <section id={id} class={cn('py-3 sm:py-4 md:py-5 px-3 sm:px-6 overflow-hidden', className)}>
+      {hasMeta ? (
+        <div class='grid grid-cols-1 md:grid-cols-[100px_1fr] lg:grid-cols-[140px_1fr] gap-2 sm:gap-4 md:gap-6'>
+          {label && (
+            <div class='md:pt-0.5'>
+              <span class='inline-block font-mono text-[9px] sm:text-[10px] uppercase tracking-wider text-muted-foreground bg-muted px-1.5 py-0.5'>
+                {label}
+              </span>
+            </div>
+          )}
+
+          <div class='space-y-3 sm:space-y-4 min-w-0'>
+            {(title || description) && (
+              <div class='space-y-1'>
+                {title && <h2 class='text-base sm:text-lg font-medium text-foreground'>{title}</h2>}
+                {description && (
+                  <p class='text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-2xl'>
+                    {description}
+                  </p>
+                )}
+              </div>
+            )}
+            <div class='min-w-0'>
+              <slot />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div class='grid grid-cols-1 md:grid-cols-[100px_1fr] lg:grid-cols-[140px_1fr] gap-2 sm:gap-4 md:gap-6'>
+          <div class='hidden md:block' aria-hidden='true' />
+          <div class='min-w-0'>
+            <slot />
+          </div>
+        </div>
+      )}
+    </section>
+  )
+}
